@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -22,7 +23,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements AddEventDialog.AddEventDialogListener, DeleteEventDialog.DeleteEventDialogListener{
 
     private Context context;
 
@@ -31,6 +32,10 @@ public class MainActivity extends AppCompatActivity{
     private DrawerLayout dLayout;
     private ListView dList;
     private ArrayAdapter<String> drawerAdapter;
+
+    private AddEventDialog addEventDialog;
+
+    private DeleteEventDialog deleteEventDialog;
 
     private ListView list;
     private EventAdapter adapter;
@@ -119,8 +124,8 @@ public class MainActivity extends AppCompatActivity{
 
                         dLayout.closeDrawer(dList);
 
-                        //addEventDialog = new AddEventDialog();
-                        //addEventDialog.show(fm, "add_event_dialog_fragment");
+                        addEventDialog = new AddEventDialog();
+                        addEventDialog.show(fm, "add_event_dialog_fragment");
 
                         break;
 
@@ -129,8 +134,8 @@ public class MainActivity extends AppCompatActivity{
 
                         dLayout.closeDrawer(dList);
 
-                        //deleteEventDialog = new DeleteEventDialog();
-                        //deleteEventDialog.show(fm, "add_event_dialog_fragment");
+                        deleteEventDialog = new DeleteEventDialog();
+                        deleteEventDialog.show(fm, "add_event_dialog_fragment");
 
                         break;
                 }
@@ -222,5 +227,15 @@ public class MainActivity extends AppCompatActivity{
         int duration = Toast.LENGTH_LONG;
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
+    }
+
+    @Override
+    public void onAddEventDialogAddClick(DialogFragment dialog) {
+
+    }
+
+    @Override
+    public void onDeleteEventDialogDeleteClick(DialogFragment dialog) {
+        
     }
 }
