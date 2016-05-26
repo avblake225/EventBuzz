@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -28,8 +27,6 @@ public class MainActivity extends AppCompatActivity{
     private Context context;
 
     private Toolbar actionBar;
-
-    public static TextView tv_stacktrace;
 
     private DrawerLayout dLayout;
     private ListView dList;
@@ -65,8 +62,6 @@ public class MainActivity extends AppCompatActivity{
         actionBar.setTitle(context.getString(R.string.app_name));
         actionBar.setTitleTextColor(context.getResources().getColor(R.color.white));
 
-        tv_stacktrace = (TextView)findViewById(R.id.tv_stacktrace);
-
         // Set up Navigation Drawer
         dLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         dList = (ListView) findViewById(R.id.left_drawer);
@@ -76,6 +71,8 @@ public class MainActivity extends AppCompatActivity{
         check = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         info = check.getAllNetworkInfo();
+
+        showToastMessage(context.getString(R.string.no_connection_available));
 
         for (int i = 0; i<info.length; i++){
 
@@ -166,6 +163,10 @@ public class MainActivity extends AppCompatActivity{
 
                     parseJsonData(result);
                 }
+                else{
+
+                    showToastMessage(context.getString(R.string.error_downloading_events));
+                }
             }
         }.execute();
     }
@@ -197,7 +198,7 @@ public class MainActivity extends AppCompatActivity{
             }
             else{
 
-                showToastMessage(context.getString(R.string.error_downloading_events));
+                showToastMessage(context.getString(R.string.bad_response_from_server));
             }
         }
         catch (JSONException e) {
@@ -212,9 +213,9 @@ public class MainActivity extends AppCompatActivity{
 
         list= ( ListView )findViewById(R.id.event_list);
 
-        //adapter = new EventAdapter( this, eventsToDisplay, res);
+        adapter = new EventAdapter( this, eventsToDisplay, res);
 
-        //list.setAdapter(adapter);
+        list.setAdapter(adapter);
     }
 
     private void showToastMessage(CharSequence text) {

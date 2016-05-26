@@ -29,11 +29,6 @@
 
             </android.support.v7.widget.Toolbar>
 
-            <TextView
-                android:id="@+id/tv_stacktrace"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
             <ListView
                 android:id="@+id/event_list"
                 android:layout_width="match_parent"

@@ -5,10 +5,15 @@
     <drawable name="clr_focused">#FF6600</drawable>
     <drawable name="clr_pressed">#FFD700</drawable>
 
+    <string name="no_connection_available">No connection available</string>
     <string name="connected_to_network">Connected to network</string>
     <string name="error_connecting_to_network">Error connecting to network</string>
+    <string name="server_cant_be_reached">Server can\'t be reached</string>
     <string name="error_downloading_events">Error downloading events. Check your network connection</string>
+    <string name="bad_response_from_server">Bad response from server</string>
     <string name="json_error">JSON Error</string>
+
+    <string name="url_name">http://shrouded-woodland-9458.herokuapp.com/events</string>
 
     <string-array name="menu_items">
         <item>Get All Events</item>

@@ -17,8 +17,6 @@ public class GetEventsTask extends AsyncTask<String, Void, String>{
 
     private Context context;
 
-    private String url_name;
-
     private BufferedReader reader;
 
     private String content;
@@ -26,8 +24,6 @@ public class GetEventsTask extends AsyncTask<String, Void, String>{
     public GetEventsTask(Context context) {
 
         this.context = context;
-
-        url_name = "http://shrouded-woodland-9458.herokuapp.com/events";
     }
 
     @Override
@@ -37,7 +33,7 @@ public class GetEventsTask extends AsyncTask<String, Void, String>{
 
         try {
 
-            url = new URL(url_name);
+            url = new URL(context.getString(R.string.url_name));
         }
         catch (MalformedURLException e) {
             e.printStackTrace();
@@ -53,6 +49,8 @@ public class GetEventsTask extends AsyncTask<String, Void, String>{
         }
         catch (IOException e) {
             e.printStackTrace();
+
+            showToastMessage(context.getString(R.string.server_cant_be_reached));
         }
 
         InputStream is = null;
