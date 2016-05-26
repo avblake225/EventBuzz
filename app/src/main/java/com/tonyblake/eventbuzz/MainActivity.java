@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity{
     private ArrayAdapter<String> drawerAdapter;
 
     private ListView list;
-    //private EventAdapter adapter;
+    private EventAdapter adapter;
 
     private ArrayList<Event> eventsToDisplay;
 
@@ -162,12 +162,10 @@ public class MainActivity extends AppCompatActivity{
 
                 progressDialog.dismiss();
 
-                showToastMessage("Events downloaded successfully (need to be parsed)");
+                if(result != null){
 
-//                if(result != null){
-//
-//                    parseJsonData(result);
-//                }
+                    parseJsonData(result);
+                }
             }
         }.execute();
     }
@@ -182,15 +180,15 @@ public class MainActivity extends AppCompatActivity{
 
                 for (int i = 0; i < events.length(); i++) {
 
-                    JSONObject eventInstance = events.getJSONObject(i);
+                    JSONObject eventObject = events.getJSONObject(i);
 
                     Event event = new Event();
 
-                    event.name = eventInstance.getString("name");
+                    event.name = eventObject.getString("name");
 
-                    event.start = null;
+                    event.start = eventObject.getString("start");
 
-                    event.end = null;
+                    event.end = eventObject.getString("end");
 
                     eventsToDisplay.add(event);
                 }
@@ -214,9 +212,9 @@ public class MainActivity extends AppCompatActivity{
 
         list= ( ListView )findViewById(R.id.event_list);
 
-//        adapter = new EventAdapter( mainActivity, eventsToDisplay, res);
-//
-//        list.setAdapter(adapter);
+        //adapter = new EventAdapter( this, eventsToDisplay, res);
+
+        //list.setAdapter(adapter);
     }
 
     private void showToastMessage(CharSequence text) {
