@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">EventBuzz</string>
+    <drawable name="clr_normal_white">#FFFFFF</drawable>
+    <drawable name="clr_normal_gray">#696969</drawable>
+    <drawable name="clr_focused">#FF6600</drawable>
+    <drawable name="clr_pressed">#FFD700</drawable>
+
+    <string-array name="menu_items">
+        <item>Get All Events</item>
+        <item>Add Event</item>
+        <item>Delete Event</item>
+    </string-array>
+
+    <string name="getting_events">Getting Events...</string>
+    <string name="event_added">Event Added</string>
+    <string name="event_deleted">Event Deleted</string>
+
 </resources>
