@@ -60,13 +60,15 @@ public class AddEventTask extends AsyncTask<String, Void, String>{
 
             conn = (HttpURLConnection) url.openConnection();
 
-            conn.connect();
+            conn.setDoOutput(true);
 
             conn.setRequestMethod("POST");
 
-            conn.setRequestProperty("Accept-Charset", charset);
+            conn.setRequestProperty("Accept-Charset", "UTF-8");
 
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + charset);
+
+            conn.connect();
 
         } catch (IOException e) {
             e.printStackTrace();
