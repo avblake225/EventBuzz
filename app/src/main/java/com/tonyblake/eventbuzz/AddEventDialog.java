@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -53,8 +54,11 @@ public class AddEventDialog extends DialogFragment{
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
 
-                        showToastMessage(context.getString(R.string.HAL_says_no));
-                        //mListener.onAddEventDialogAddClick(AddEventDialog.this);
+                        String name_entered = et_name.getText().toString();
+                        String start_entered = et_start.getText().toString();
+                        String end_entered = et_end.getText().toString();
+
+                        mListener.onAddEventDialogAddClick(AddEventDialog.this, name_entered, start_entered, end_entered);
 
                     }
                 })
@@ -82,10 +86,14 @@ public class AddEventDialog extends DialogFragment{
                 searchButton.setTextColor(Color.BLACK);
 
                 final Drawable cancelButtonBackground = getResources().getDrawable(R.drawable.background_color);
-                cancelButton.setBackground(cancelButtonBackground);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    cancelButton.setBackground(cancelButtonBackground);
+                }
 
                 final Drawable searchButtonBackground = getResources().getDrawable(R.drawable.background_color);
-                searchButton.setBackground(searchButtonBackground);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    searchButton.setBackground(searchButtonBackground);
+                }
             }
         });
 
@@ -94,7 +102,7 @@ public class AddEventDialog extends DialogFragment{
 
     public interface AddEventDialogListener {
 
-        void onAddEventDialogAddClick(DialogFragment dialog);
+        void onAddEventDialogAddClick(DialogFragment dialog, String name_entered, String start_entered, String end_entered);
     }
 
     AddEventDialogListener mListener;

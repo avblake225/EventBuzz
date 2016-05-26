@@ -230,12 +230,38 @@ public class MainActivity extends AppCompatActivity implements AddEventDialog.Ad
     }
 
     @Override
-    public void onAddEventDialogAddClick(DialogFragment dialog) {
+    public void onAddEventDialogAddClick(DialogFragment dialog, String name_entered, String start_entered, String end_entered) {
 
+        new AddEventTask(context) {
+
+            @Override
+            protected void onPreExecute() {
+
+                progressDialog = new ProgressDialog(context);
+                progressDialog.setMessage(context.getString(R.string.adding_event));
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog.setIndeterminate(true);
+                progressDialog.show();
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+
+                progressDialog.dismiss();
+
+                if (result.equals("success")) {
+
+                    showToastMessage(context.getString(R.string.event_added));
+                } else {
+
+                    showToastMessage(context.getString(R.string.error_adding_event));
+                }
+            }
+        }.execute(name_entered,start_entered,end_entered);
     }
 
     @Override
     public void onDeleteEventDialogDeleteClick(DialogFragment dialog) {
-        
+
     }
 }

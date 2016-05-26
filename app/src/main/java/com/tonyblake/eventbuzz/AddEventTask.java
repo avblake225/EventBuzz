@@ -4,78 +4,91 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 
-public class AddEventTask extends AsyncTask<String, Void, Void> {
+public class AddEventTask extends AsyncTask<String, Void, String>{
 
     private Context context;
 
-    private URL url;
+    private String content;
 
-    private HttpURLConnection connection;
-
-    private DataOutputStream dStream;
-
-    private String urlParameters;
-
-    public AddEventTask(Context context){
+    public AddEventTask(Context context) {
 
         this.context = context;
-
-        try {
-
-            url = new URL("http://shrouded-woodland-9458.herokuapp.com/events");
-        }
-        catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        try {
-
-            connection = (HttpURLConnection)url.openConnection();
-
-            connection.setRequestMethod("POST");
-
-            connection.setDoOutput(true);
-
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-
-            dStream = new DataOutputStream(connection.getOutputStream());
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
-    protected Void doInBackground(String... params) {
+    protected String doInBackground(String... params) {
 
-        urlParameters = "fizz=buzz";
+        String result = "";
+
+        URL url = null;
+
+        String charset = "UTF-8";
+        String name = params[0];
+        String start = params[1];
+        String end = params[2];
+
+        String query = "";
 
         try {
+            query = String.format("param1=%s&param2=%s",
+                    URLEncoder.encode(name, charset),
+                    URLEncoder.encode(start, charset),
+                    URLEncoder.encode(end, charset));
 
-            dStream.writeBytes(urlParameters);
-
-            showToastMessage(context.getString(R.string.event_added));
-
-            dStream.flush();
-
-            dStream.close();
-        }
-        catch (IOException e) {
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
-        return null;
+        try {
+
+            url = new URL(context.getString(R.string.url_name));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        HttpURLConnection conn = null;
+
+        try {
+
+            conn = (HttpURLConnection) url.openConnection();
+
+            conn.connect();
+
+            conn.setRequestMethod("POST");
+
+            conn.setRequestProperty("Accept-Charset", charset);
+
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + charset);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+
+            showToastMessage(context.getString(R.string.server_cant_be_reached));
+        }
+
+        OutputStream os;
+
+        try {
+
+            os = conn.getOutputStream();
+
+            os.write(query.getBytes(charset));
+
+            result = "success";
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
     private void showToastMessage(CharSequence text) {
