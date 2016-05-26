@@ -3,6 +3,8 @@ package com.tonyblake.eventbuzz;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.Resources;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -12,15 +14,22 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity{
 
     private Context context;
 
-    private MainActivity mainActivity;
-
     private Toolbar actionBar;
+
+    public static TextView tv_stacktrace;
 
     private DrawerLayout dLayout;
     private ListView dList;
@@ -29,9 +38,13 @@ public class MainActivity extends AppCompatActivity{
     private ListView list;
     //private EventAdapter adapter;
 
-    //private ArrayList<Event> eventsToDisplay;
+    private ArrayList<Event> eventsToDisplay;
 
     private ProgressDialog progressDialog;
+
+    private ConnectivityManager check;
+
+    private NetworkInfo[] info;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,11 +65,25 @@ public class MainActivity extends AppCompatActivity{
         actionBar.setTitle(context.getString(R.string.app_name));
         actionBar.setTitleTextColor(context.getResources().getColor(R.color.white));
 
+        tv_stacktrace = (TextView)findViewById(R.id.tv_stacktrace);
+
         // Set up Navigation Drawer
         dLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         dList = (ListView) findViewById(R.id.left_drawer);
         drawerAdapter = new ArrayAdapter<String>(this,R.layout.drawer_item_layout,context.getResources().getStringArray(R.array.menu_items));
         dList.setAdapter(drawerAdapter);
+
+        check = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        info = check.getAllNetworkInfo();
+
+        for (int i = 0; i<info.length; i++){
+
+            if (info[i].getState() == NetworkInfo.State.CONNECTED){
+
+                showToastMessage(context.getString(R.string.connected_to_network));
+            }
+        }
     }
 
     @Override
@@ -86,7 +113,7 @@ public class MainActivity extends AppCompatActivity{
 
                         dLayout.closeDrawer(dList);
 
-                        // getAllEvents();
+                        getAllEvents();
 
                         break;
 
@@ -116,35 +143,69 @@ public class MainActivity extends AppCompatActivity{
 
     private void getAllEvents(){
 
-//        eventsToDisplay = new ArrayList<>();
+        eventsToDisplay = new ArrayList<>();
+
+        new GetEventsTask(context) {
+
+            @Override
+            protected void onPreExecute() {
+
+                progressDialog = new ProgressDialog(context);
+                progressDialog.setMessage(context.getString(R.string.getting_events));
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog.setIndeterminate(true);
+                progressDialog.show();
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+
+                progressDialog.dismiss();
+
+                showToastMessage("Events downloaded successfully (need to be parsed)");
+
+//                if(result != null){
 //
-//        new GetEventsTask(context) {
-//
-//            @Override
-//            protected void onPreExecute() {
-//
-//                progressDialog = new ProgressDialog(context);
-//                progressDialog.setMessage(context.getString(R.string.getting_events));
-//                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-//                progressDialog.setIndeterminate(true);
-//                progressDialog.show();
-//            }
-//
-//            @Override
-//            protected void onPostExecute(ArrayList<Event> events_returned) {
-//
-//                if (events_returned != null) {
-//
-//                    eventsToDisplay = events_returned;
-//
-//                    progressDialog.dismiss();
-//
-//                    displayEvents();
-//
+//                    parseJsonData(result);
 //                }
-//            }
-//
-//        }.execute();
+            }
+        }.execute();
+    }
+
+    private void parseJsonData(String data){
+
+        try {
+
+            JSONArray events = new JSONArray(data);
+
+            if(events != null) {
+
+                for (int i = 0; i < events.length(); i++) {
+
+                    JSONObject eventInstance = events.getJSONObject(i);
+
+                    Event event = new Event();
+
+                    event.name = eventInstance.getString("name");
+
+                    event.start = null;
+
+                    event.end = null;
+
+                    eventsToDisplay.add(event);
+                }
+
+                displayEvents();
+            }
+            else{
+
+                showToastMessage(context.getString(R.string.error_downloading_events));
+            }
+        }
+        catch (JSONException e) {
+
+            showToastMessage(context.getString(R.string.json_error));
+        }
     }
 
     private void displayEvents(){
@@ -163,16 +224,4 @@ public class MainActivity extends AppCompatActivity{
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
     }
-
-//    @Override
-//    public void onAddEventDialogAddClick(DialogFragment dialog) {
-//
-//        showToastMessage(context.getString(R.string.event_added));
-//    }
-//
-//    @Override
-//    public void onDeleteEventDialogDeleteClick(DialogFragment dialog) {
-//
-//        showToastMessage(context.getString(R.string.event_deleted));
-//    }
 }
