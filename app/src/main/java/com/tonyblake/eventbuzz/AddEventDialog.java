@@ -13,7 +13,6 @@ import android.support.v7.app.AlertDialog;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 public class AddEventDialog extends DialogFragment{
 
@@ -45,7 +44,7 @@ public class AddEventDialog extends DialogFragment{
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        builder.setTitle(R.string.enter_event_details)
+        builder.setTitle(R.string.add_event)
 
                 .setView(ll)
 
@@ -117,11 +116,5 @@ public class AddEventDialog extends DialogFragment{
         catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement NoticeDialogListener");
         }
-    }
-
-    private void showToastMessage(CharSequence text) {
-        int duration = Toast.LENGTH_LONG;
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
     }
 }

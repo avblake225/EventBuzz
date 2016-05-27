@@ -22,15 +22,16 @@
     </string-array>
 
     <string name="getting_events">Getting Events...</string>
+    <string name="add_event">Add Event:</string>
     <string name="adding_event">Adding Event...</string>
-    <string name="enter_event_details">Enter event details...</string>
+    <string name="delete_event">Delete Event:</string>
+    <string name="deleting_event">Deleting Event...</string>
     <string name="enter_event_to_remove">Enter event to remove...</string>
     <string name="name">Name</string>
     <string name="start">Start</string>
     <string name="end">End</string>
     <string name="add">Add</string>
     <string name="delete">Delete</string>
-    <string name="HAL_says_no">I\'m sorry Dave, I\'m afraid I can\'t do that</string>
     <string name="cancel">Cancel</string>
     <string name="event_added">Event Added</string>
     <string name="error_adding_event">Error adding event</string>

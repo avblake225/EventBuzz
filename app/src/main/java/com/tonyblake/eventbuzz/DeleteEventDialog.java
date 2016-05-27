@@ -6,18 +6,21 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.LinearLayout;
 
 public class DeleteEventDialog extends DialogFragment{
 
     private Context context;
 
     private EditText et_name;
+    private EditText et_start;
+    private EditText et_end;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -27,19 +30,34 @@ public class DeleteEventDialog extends DialogFragment{
         et_name = new EditText(context);
         et_name.setHint(context.getString(R.string.name));
 
+        et_start = new EditText(context);
+        et_start.setHint(context.getString(R.string.start));
+
+        et_end = new EditText(context);
+        et_end.setHint(context.getString(R.string.end));
+
+        LinearLayout ll=new LinearLayout(context);
+        ll.setOrientation(LinearLayout.VERTICAL);
+        ll.addView(et_name);
+        ll.addView(et_start);
+        ll.addView(et_end);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        builder.setTitle(R.string.enter_event_to_remove)
+        builder.setTitle(R.string.delete_event)
 
-                .setView(et_name)
+                .setView(ll)
 
                 .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
 
-                        showToastMessage(context.getString(R.string.HAL_says_no));
-                        //mListener.onDeleteEventDialogDeleteClick(AddEventDialog.this);
+                        String name_entered = et_name.getText().toString();
+                        String start_entered = et_start.getText().toString();
+                        String end_entered = et_end.getText().toString();
+
+                        mListener.onDeleteEventDialogDeleteClick(DeleteEventDialog.this, name_entered, start_entered, end_entered);
 
                     }
                 })
@@ -67,10 +85,14 @@ public class DeleteEventDialog extends DialogFragment{
                 searchButton.setTextColor(Color.BLACK);
 
                 final Drawable cancelButtonBackground = getResources().getDrawable(R.drawable.background_color);
-                cancelButton.setBackground(cancelButtonBackground);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    cancelButton.setBackground(cancelButtonBackground);
+                }
 
                 final Drawable searchButtonBackground = getResources().getDrawable(R.drawable.background_color);
-                searchButton.setBackground(searchButtonBackground);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    searchButton.setBackground(searchButtonBackground);
+                }
             }
         });
 
@@ -79,7 +101,7 @@ public class DeleteEventDialog extends DialogFragment{
 
     public interface DeleteEventDialogListener {
 
-        void onDeleteEventDialogDeleteClick(DialogFragment dialog);
+        void onDeleteEventDialogDeleteClick(DialogFragment dialog, String name_entered, String start_entered, String end_entered);
     }
 
     DeleteEventDialogListener mListener;
@@ -94,11 +116,5 @@ public class DeleteEventDialog extends DialogFragment{
         catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement NoticeDialogListener");
         }
-    }
-
-    private void showToastMessage(CharSequence text) {
-        int duration = Toast.LENGTH_LONG;
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
     }
 }
